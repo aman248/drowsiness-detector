@@ -15,7 +15,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         self.hog_face_detector = dlib.get_frontal_face_detector()
-        self.dlib_facelandmark = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+        self.dlib_facelandmark = dlib.shape_predictor("static/shape_predictor_68_face_landmarks.dat")
 
         self.i = 0
     async def disconnect(self,close_code):
