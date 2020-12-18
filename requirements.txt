@@ -132,9 +132,6 @@ python-jsonrpc-server==0.4.0
 python-language-server==0.35.1
 PyTweening==1.0.3
 pytz==2020.1
-pywin32==227
-pywin32-ctypes==0.2.0
-pywinpty==0.5.7
 PyYAML==5.3.1
 pyzmq==19.0.1
 QDarkStyle==2.8.1
