@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Drowsiness Detector</title>
+    </head>
+<body>
+
+
+<div id="container">
+<video width="200" height="200" autoplay="true" id="video">
+</video>
+</div>
+<button onclick="capture()">Capture</button>  <br>
+<canvas id="canvas" style="overflow:auto"></canvas>
+<br>
+<p> Image Converted to String: </p>
+<p id="printresult"></p>
+<script>
+    var video = document.querySelector("#video");
+    const WS_URL = 'ws://localhost:8000/ws';
+    const FPS = 3;
+    const ws = new WebSocket(WS_URL);
+    if (navigator.mediaDevices.getUserMedia) {
+         navigator.mediaDevices.getUserMedia({ video: true })
+           .then(function (stream) {
+             video.srcObject = stream;
+           })
+           .catch(function (err0r) {
+             console.log("Something went wrong!");
+           });
+    }
+    var resultb64="";
+    function capture() {        
+       var canvas = document.getElementById('canvas');     
+       var video = document.getElementById('video');
+       canvas.width = 200;
+       canvas.height = 200;
+       canvas.getContext('2d').drawImage(video, 0, 0, 200,200);  
+       var a = canvas.toDataURL();
+       a = a.slice(22);
+       ws.send(a);
+    }
+    ws.onmessage = function(e) {
+        const data = e.data;
+        console.log(data)
+        document.querySelector('#printresult').innerHTML = data;
+    };
+     document.getElementById("printresult").innerHTML = resultb64;
+</script>
+</body>
+</html>
