@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>Drowsiness Detector</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'chat/2.png' %}"/>
+      
     </head>
 <body>
 <div id="container">
@@ -47,6 +49,9 @@
       setInterval(capture, 180);
 
     }
+    ws.onopen = function(event) {
+      console.log("WebSocket is open now.");
+    };
     ws.onmessage = function(e) {
         const data = e.data;
         console.log(data)

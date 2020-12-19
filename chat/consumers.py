@@ -17,6 +17,8 @@ class StreamConsumer(AsyncWebsocketConsumer):
         self.dlib_facelandmark = dlib.shape_predictor("static/shape_predictor_68_face_landmarks.dat")
 
         self.i = 0
+        self.q = Q(5)
+        self.blink_list = Q(50)
     async def disconnect(self,close_code):
         pass
     async def receive(self,text_data):
@@ -31,6 +33,8 @@ class StreamConsumer(AsyncWebsocketConsumer):
         faces = self.hog_face_detector(gray)
         if not faces:
             print('no face')
+            self.q.add(0)
+            self.blink_list.add(0)
         for face in faces:
 
             face_landmarks = self.dlib_facelandmark(gray, face)
@@ -54,13 +58,41 @@ class StreamConsumer(AsyncWebsocketConsumer):
             EAR = (left_ear+right_ear)/2
             EAR = round(EAR,2)
             print(EAR)
+
             if EAR<0.26:
+                self.q.add(1)
+            else:
+                self.q.add(0)
+
+            if EAR <0.28:
+                self.blink_list.add(1)
+            else:
+                self.blink_list.add(0)
+
+            if self.q.countValue(1) >= 4:
                 await self.send('drowsy')
             else:
-                await self.send('checking.....')
+                await self.send('checking' + str(self.blink_list.countValue(1)) )
     def calculate_EAR(self,eye):
         A = distance.euclidean(eye[1], eye[5])
         B = distance.euclidean(eye[2], eye[4])
         C = distance.euclidean(eye[0], eye[3])
         ear_aspect_ratio = (A+B)/(2.0*C)
         return ear_aspect_ratio
+class Q:
+    def __init__(self,len):
+        self.lis = [0]*len
+        self.len = len
+    def add(self,item):
+        for i in range(1,self.len):
+            self.lis[i-1] = self.lis[i]
+        self.lis[self.len-1] = item
+    def countValue(self,item):
+        count = 0
+        for i in self.lis:
+            if i == item:
+                count += 1
+        return count
+        
+
+
