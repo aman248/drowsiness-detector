@@ -1,5 +1,5 @@
 # projecttwo
-to run this project, first install anaconda then follow steps 
+To run this project, first install anaconda then follow steps <br/>
 step 1 : **install dependencies**<br/>
 open terminal and run follwing commands.
 ```
