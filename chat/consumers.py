@@ -4,10 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import cv2
 import dlib
 from scipy.spatial import distance
-import os 
-import asyncio
 from django.conf import settings
-import threading
 import base64
 import numpy as np
 class StreamConsumer(AsyncWebsocketConsumer):
@@ -15,14 +12,12 @@ class StreamConsumer(AsyncWebsocketConsumer):
         await self.accept()
         self.hog_face_detector = dlib.get_frontal_face_detector()
         self.dlib_facelandmark = dlib.shape_predictor("static/shape_predictor_68_face_landmarks.dat")
-
-        self.i = 0
         self.q = Q(5)
-        self.blink_list = Q(50)
+
     async def disconnect(self,close_code):
         pass
-    async def receive(self,text_data):
 
+    async def receive(self,text_data):
         await self.new_method(text_data)
 
     async def new_method(self, text_data):
@@ -34,7 +29,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
         if not faces:
             print('no face')
             self.q.add(0)
-            self.blink_list.add(0)
+    
         for face in faces:
 
             face_landmarks = self.dlib_facelandmark(gray, face)
@@ -64,21 +59,19 @@ class StreamConsumer(AsyncWebsocketConsumer):
             else:
                 self.q.add(0)
 
-            if EAR <0.28:
-                self.blink_list.add(1)
-            else:
-                self.blink_list.add(0)
-
             if self.q.countValue(1) >= 4:
                 await self.send('drowsy')
             else:
-                await self.send('checking' + str(self.blink_list.countValue(1)) )
+                await self.send('checking')
+
     def calculate_EAR(self,eye):
         A = distance.euclidean(eye[1], eye[5])
         B = distance.euclidean(eye[2], eye[4])
         C = distance.euclidean(eye[0], eye[3])
         ear_aspect_ratio = (A+B)/(2.0*C)
         return ear_aspect_ratio
+
+        
 class Q:
     def __init__(self,len):
         self.lis = [0]*len

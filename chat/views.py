@@ -2,4 +2,4 @@
 from django.shortcuts import render
      
 def stream(request):
-    return render(request,'chat/test.html',{})
+    return render(request,'chat/index.html',{})

@@ -2,16 +2,20 @@
 <html>
     <head>
         <title>Drowsiness Detector</title>
-        <link rel="shortcut icon" type="image/png" href="{% static 'chat/2.png' %}"/>
+        <link rel="shortcut icon" type="image/png" href="{% static '2.png' %}"/>
+        <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+        <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
+        <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+        <link rel="stylesheet" href="{% static 'chat/css/main.css' %}">
       
     </head>
 <body>
 <div id="container">
-<video width="200" height="200" autoplay="true" id="video">
+<video width="200" height="200" autoplay="true" id="output">
 </video>
 </div>
-<button onclick="start()">Capture</button>  <br>
-<canvas id="canvas" style="overflow:auto"></canvas>
+<button onclick="start()" id="pipBtn" class="button"> Capture</button>  <br>
+<canvas id="canvas" style="overflow:auto" hidden></canvas>
 <br>
 <p> Image Converted to String: </p>
 <p id="printresult"></p>
@@ -20,7 +24,7 @@
   Your browser does not support the audio tag.
 </audio>
 <script>
-    var video = document.querySelector("#video");
+    var video = document.querySelector("#output");
     const WS_URL = 'ws://localhost:8000/ws';
     const FPS = 3;
     const ws = new WebSocket(WS_URL);
@@ -36,7 +40,7 @@
     var resultb64="";
     function capture() {        
        var canvas = document.getElementById('canvas');     
-       var video = document.getElementById('video');
+       var video = document.getElementById('output');
        canvas.width = 200;
        canvas.height = 200;
        canvas.getContext('2d').drawImage(video, 0, 0, 200,200);  

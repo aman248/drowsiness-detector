@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>project drowsy</title>
+    <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
+    <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="inner-header flex">
+            <h1>HAPPY TRUCKER</h1>
+        </div>
+    </div>
+
+    <!-- content begins -->
+    <section class="body_area bg_color">
+        <div class="body_top">
+            <div id="container">
+                <video id="output"></video>
+                <button class="button" id="pipBtn">CAPTURE</button>
+                <p id="error"></p>
+            </div>
+            <script type="text/javascript">
+                function detectSupport() {
+                    if(!navigator.mediaDevices) {
+                        alert("Not supproted");
+                        return false;
+                    }
+                    if (!('pictureInPictureEnabled' in document)) {
+                        alert('The Picture-in-Picture Web API is not available.');
+                        return false;
+                    }
+                    else if (!document.pictureInPictureEnabled) {
+                        alert('The Picture-in-Picture Web API is disabled.');
+                        return false;
+                    }
+                    return true;
+                }
+
+                const videoEl = document.getElementById("output");
+                const pipBtn = document.getElementById("pipBtn");
+
+                async function requestPip() {
+                    try {
+                        await videoEl.requestPictureInPicture();
+                        pipBtn.disabled = true;
+                    } catch(err) {
+                        errorEl.innerHTML = `Sorry! We could not get this working for you because of ${err.message}`;
+                    }
+                }
+
+                async function loadVideo() {
+                    try {
+                        const constraints = { audio: false, video: { width: 480, height: 378 } };
+                        const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+                        videoEl.srcObject = mediaStream;
+                        videoEl.onloadedmetadata = (e) => {
+                            videoEl.play();
+                            requestPip();
+                        };
+                    } catch(err) {
+                        const errorEl = document.getElementById("error");
+                        errorEl.innerHTML = `Sorry! We could not get this working for you because of ${err.message}`;
+                    }
+                }
+
+                function init() {
+                    if(!detectSupport()) {
+                        return;
+                    }
+                    loadVideo();
+                    pipBtn.addEventListener("click", requestPip);
+                    videoEl.addEventListener('leavepictureinpicture', () => {
+                        pipBtn.disabled = false;
+                    });
+                }
+
+                init();
+            </script>
+
+            <div class="body_bg">
+                <div class="body_bg_one"></div>
+                <div class="body_bg_two"></div>
+            </div>
+        </div>
+               <!-- bottom body-->
+        <div class="body_bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-sm-7">
+                        <p class="mb-0 f_400">
+                            <a class="fa fa-copyright"></a> Project-drowsy. 2020 All rights reserved.
+                        </p>
+                    </div>
+                    <div class="col-lg-6 col-sm-5 text-right">
+                        <div>Made with
+                            <a class="fa fa-heart" style="color:#e60606"></a> in <strong>India</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- content ends -->
+</body>
+
+
+</html>

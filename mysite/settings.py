@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 SECRET_KEY = "y!z^)2-dr-ipiee#cabd#(f@$hfhm-og3e8@fzz)k=h5-_w=p+"
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles', 
 ]
+SITE_ID = 1
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
